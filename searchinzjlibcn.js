@@ -22,10 +22,13 @@ function GM_wait() {
 
 function jqcode($) {
 	//http://opac.zjlib.cn/opac/search?rows=10&searchWay0=marc&q0=&logical0=AND&q=coffeescript&searchWay=title&scWay=dim&searchSource=reader
-    $("a[href!='9.douban.com'][href^='https://book.douban.com/subject/'][href$='/'], a[href^='https://read.douban.com/ebook/'][href$='/']").each(function() {
+    $("a[href^='https://book.douban.com/subject/'], a[href^='https://read.douban.com/ebook/'], a[href^='https://market.douban.com/book/']").each(function() {
         var _this = $(this);
 		
-		if (_this.attr('href').indexOf('comments') != -1 || _this.text() == 'Springer版') {
+		if (_this.text() == 'Springer版'
+				|| _this.attr('href') == 'https://market.douban.com/book/'
+				|| _this.attr('href').search('(comments|discussion)') != -1
+				|| _this.attr('href').search('(edit|new_review|doulists|buylinks|new_offer|doings|collections|wishes|reviews|offers)$') != -1) {
 			return;
 		}
         
@@ -41,7 +44,7 @@ function jqcode($) {
             , "\" title='&#21435;&#27993;&#22270;&#25214;&#25214;&#30475;'><img src='data:image/png;base64,"
             , "iVBORw0KGgoAAAANSUhEUgAAAAoAAAAKCAMAAAC67D+PAAAAFVBMVEVmmcwzmcyZzP8AZswAZv////////9E6giVAAAAB3RSTlP///////8AGksDRgAAADhJREFUGFcly0ESAEAEA0Ei6/9P3sEcVB8kmrwFyni0bOeyyDpy9JTLEaOhQq7Ongf5FeMhHS/4AVnsAZubxDVmAAAAAElFTkSuQmCC'/></a>"
         ];
-        _this.after(obj.join(''));
+        _this.before(obj.join(''));
     });
 }
 
