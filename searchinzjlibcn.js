@@ -2,12 +2,12 @@
 // @name           Search in ZJLIB.CN
 // @namespace      openingcard.com
 // @description    Search book in ZJLIB
-// @include        http://*.douban.com/*
+// @include        https://*.douban.com/*
 // @icon           data:image/vnd.microsoft.icon;base64,AAABAAEAEBAAAAEACABoBQAAFgAAACgAAAAQAAAAIAAAAAEACAAAAAAAAAEAABILAAASCwAAAAEAAAABAAA4jSoAEHMAAIW4fQCtz6gAQZIzAODt3gAQcgAARJQ3AFCbRAA3iikA3uzcAKvNpQDL4cgAFHQEADiMKgBfpFQAN4oqAD+OMgCRwIkAQJAyACqDGwBHkzsAR5Y6ABV3BABEkDcARJE3ACqFGwBQmkQA3OvZAIa4fQA2iikAQ5Q2AF+hVADb6tkAcKpmAFCYRABDkDYAkL6JAEiWOwCZxZIAzOHIAIa5fQBHlDoArtCoAJnEkgBwrWYAPo4xADaJKQCszqYAOIsrAIS3fAA4iyoAEXYAABF1AAARdAAA////ABF3AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABDg1NgE2NjY2NjY2NgE2EzgPKwMwCzAwMDALMAMDIDU4Jzc3Nzc3Nzc3Nzc3Nyw0ODg4OBI3IjU4LTclATQ4ODg4ODQFNw02NRc3BQY2NDg4ODgbNzcvLhEeNzcjATU4ODgmNzc3Nzc3Nzc3NxU1ODg4BzchEAAAAAAAHDcYNTg4OB83DAY2NTU1NSg3JDU4ODgHNwoxMTExMTEKNxk1ODg4Fjc3Nzc3Nzc3NzcqNDg4ODQOMwkzMzMzCTMzNjU0OBopHQIyMjIyMjICAgIUNDgINzc3Nzc3Nzc3Nzc3CDg4ODg4ODg4ODg4ODg4ODg4BDg4ODg4ODg4ODg4ODg4BAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=
 // ==/UserScript==
 
 var GM_JQ = document.createElement('script');
-GM_JQ.src = 'http://code.jquery.com/jquery-latest.pack.js';
+GM_JQ.src = 'https://code.jquery.com/jquery-3.1.0.min.js';
 GM_JQ.type = 'text/javascript';
 document.getElementsByTagName('head')[0].appendChild(GM_JQ);
 
@@ -21,9 +21,13 @@ function GM_wait() {
 }
 
 function jqcode($) {
-    $('body').append("<form action='http://opac.zjlib.cn:8088/opac/search?searchWay=title' method='get' target='_blank' id='zjlib'><input type='hidden' name='q' value=''/></form>");
-    $("a[href!='9.douban.com'][href^='http://book.douban.com/subject/'][href$='/']").each(function() {
+	//http://opac.zjlib.cn/opac/search?rows=10&searchWay0=marc&q0=&logical0=AND&q=coffeescript&searchWay=title&scWay=dim&searchSource=reader
+    $("a[href!='9.douban.com'][href^='https://book.douban.com/subject/'][href$='/'], a[href^='https://read.douban.com/ebook/'][href$='/']").each(function() {
         var _this = $(this);
+		
+		if (_this.attr('href').indexOf('comments') != -1 || _this.text() == 'Springer版') {
+			return;
+		}
         
         var bookName = $.trim(_this.attr('title') || _this.text());
         
@@ -32,9 +36,9 @@ function jqcode($) {
         }
 
         var obj = [
-            "<a href=\"javascript:var fm=document.forms.zjlib;fm.q.value='"
+            "<a target='_blank' href=\"http://opac.zjlib.cn/opac/search?rows=10&searchWay=title&q="
             , encodeURIComponent(bookName)
-            , "';fm.submit();\" title='&#21435;&#27993;&#22270;&#25214;&#25214;&#30475;'><img src='data:image/png;base64,"
+            , "\" title='&#21435;&#27993;&#22270;&#25214;&#25214;&#30475;'><img src='data:image/png;base64,"
             , "iVBORw0KGgoAAAANSUhEUgAAAAoAAAAKCAMAAAC67D+PAAAAFVBMVEVmmcwzmcyZzP8AZswAZv////////9E6giVAAAAB3RSTlP///////8AGksDRgAAADhJREFUGFcly0ESAEAEA0Ei6/9P3sEcVB8kmrwFyni0bOeyyDpy9JTLEaOhQq7Ongf5FeMhHS/4AVnsAZubxDVmAAAAAElFTkSuQmCC'/></a>"
         ];
         _this.after(obj.join(''));
