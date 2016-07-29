@@ -21,19 +21,19 @@ function GM_wait() {
 }
 
 function jqcode($) {
-	//http://opac.zjlib.cn/opac/search?rows=10&searchWay0=marc&q0=&logical0=AND&q=coffeescript&searchWay=title&scWay=dim&searchSource=reader
+    //http://opac.zjlib.cn/opac/search?rows=10&searchWay0=marc&q0=&logical0=AND&q=coffeescript&searchWay=title&scWay=dim&searchSource=reader
     $("a[href^='https://book.douban.com/subject/'], a[href^='https://read.douban.com/ebook/'], a[href^='https://market.douban.com/book/']").each(function() {
         var _this = $(this);
-		
-		if (_this.text() == 'Springer版'
-				|| _this.attr('href') == 'https://market.douban.com/book/'
-				|| _this.attr('href').search('(comments|discussion)') != -1
-				|| _this.attr('href').search('(edit|new_review|doulists|buylinks|new_offer|doings|collections|wishes|reviews|offers)$') != -1) {
-			return;
-		}
-        
+
+        if (_this.text() == 'Springer版'
+            || _this.attr('href') == 'https://market.douban.com/book/'
+            || _this.attr('href').search('(comments|discussion)') != -1
+            || _this.attr('href').search('(edit|new_review|doulists|buylinks|new_offer|doings|collections|wishes|reviews|offers)$') != -1) {
+            return;
+        }
+
         var bookName = $.trim(_this.attr('title') || _this.text());
-        
+
         if (bookName === null || bookName === "") {
             return;
         }
