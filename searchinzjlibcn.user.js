@@ -4,6 +4,7 @@
 // @description    Search book in ZJLIB
 // @include        https://*.douban.com/*
 // @require        https://code.jquery.com/jquery-3.1.0.min.js
+// @require        https://cdnjs.cloudflare.com/ajax/libs/jquery-replace-text/1.1.0/jquery-replace-text-min.js
 // @icon           data:image/vnd.microsoft.icon;base64,AAABAAEAEBAAAAEACABoBQAAFgAAACgAAAAQAAAAIAAAAAEACAAAAAAAAAEAABILAAASCwAAAAEAAAABAAA4jSoAEHMAAIW4fQCtz6gAQZIzAODt3gAQcgAARJQ3AFCbRAA3iikA3uzcAKvNpQDL4cgAFHQEADiMKgBfpFQAN4oqAD+OMgCRwIkAQJAyACqDGwBHkzsAR5Y6ABV3BABEkDcARJE3ACqFGwBQmkQA3OvZAIa4fQA2iikAQ5Q2AF+hVADb6tkAcKpmAFCYRABDkDYAkL6JAEiWOwCZxZIAzOHIAIa5fQBHlDoArtCoAJnEkgBwrWYAPo4xADaJKQCszqYAOIsrAIS3fAA4iyoAEXYAABF1AAARdAAA////ABF3AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABDg1NgE2NjY2NjY2NgE2EzgPKwMwCzAwMDALMAMDIDU4Jzc3Nzc3Nzc3Nzc3Nyw0ODg4OBI3IjU4LTclATQ4ODg4ODQFNw02NRc3BQY2NDg4ODgbNzcvLhEeNzcjATU4ODgmNzc3Nzc3Nzc3NxU1ODg4BzchEAAAAAAAHDcYNTg4OB83DAY2NTU1NSg3JDU4ODgHNwoxMTExMTEKNxk1ODg4Fjc3Nzc3Nzc3NzcqNDg4ODQOMwkzMzMzCTMzNjU0OBopHQIyMjIyMjICAgIUNDgINzc3Nzc3Nzc3Nzc3CDg4ODg4ODg4ODg4ODg4ODg4BDg4ODg4ODg4ODg4ODg4BAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=
 // ==/UserScript==
 
@@ -16,6 +17,19 @@ function GM_wait() {
 }
 
 function jqcode($) {
+    function iconObj(bookName, visible) {
+        var obj = [];
+        obj.push("<a target='_blank' href=\"http://opac.zjlib.cn/opac/search?rows=10&searchWay=title&q=");
+        obj.push(bookName);
+        obj.push("\" title='&#21435;&#27993;&#22270;&#25214;&#25214;&#30475;'>");
+        if (visible) {
+            obj.push(bookName);
+        }
+        obj.push("<img src='data:image/png;base64,");
+        obj.push("iVBORw0KGgoAAAANSUhEUgAAAAoAAAAKCAMAAAC67D+PAAAAFVBMVEVmmcwzmcyZzP8AZswAZv////////9E6giVAAAAB3RSTlP///////8AGksDRgAAADhJREFUGFcly0ESAEAEA0Ei6/9P3sEcVB8kmrwFyni0bOeyyDpy9JTLEaOhQq7Ongf5FeMhHS/4AVnsAZubxDVmAAAAAElFTkSuQmCC'/></a>");
+        return obj.join('');
+    }
+
     //http://opac.zjlib.cn/opac/search?rows=10&searchWay0=marc&q0=&logical0=AND&q=coffeescript&searchWay=title&scWay=dim&searchSource=reader
     $("a[href^='https://book.douban.com/subject/'], a[href^='https://read.douban.com/ebook/'], a[href^='https://market.douban.com/book/']").each(function() {
         var _this = $(this);
@@ -33,14 +47,10 @@ function jqcode($) {
             return;
         }
 
-        var obj = [
-            "<a target='_blank' href=\"http://opac.zjlib.cn/opac/search?rows=10&searchWay=title&q="
-            , encodeURIComponent(bookName)
-            , "\" title='&#21435;&#27993;&#22270;&#25214;&#25214;&#30475;'><img src='data:image/png;base64,"
-            , "iVBORw0KGgoAAAANSUhEUgAAAAoAAAAKCAMAAAC67D+PAAAAFVBMVEVmmcwzmcyZzP8AZswAZv////////9E6giVAAAAB3RSTlP///////8AGksDRgAAADhJREFUGFcly0ESAEAEA0Ei6/9P3sEcVB8kmrwFyni0bOeyyDpy9JTLEaOhQq7Ongf5FeMhHS/4AVnsAZubxDVmAAAAAElFTkSuQmCC'/></a>"
-        ];
-        _this.before(obj.join(''));
+        _this.before(iconObj(encodeURIComponent(bookName), false));
     });
+    
+    $('div.short-content,div.reading-note span,p.comment-content').replaceText(/(《.*》)/gi, iconObj('$1', true));
 }
 
 GM_wait();
