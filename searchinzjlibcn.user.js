@@ -23,7 +23,7 @@ function jqcode($) {
         if (_this.text() == 'Springer版'
             || _this.attr('href') == 'https://market.douban.com/book/'
             || _this.attr('href').search('(comments|discussion)') != -1
-            || _this.attr('href').search('(edit|new_review|doulists|buylinks|new_offer|doings|collections|wishes|reviews|offers)$') != -1) {
+            || _this.attr('href').search('(edit|new_review|doulists|buylinks|new_offer|doings|collections|wishes|reviews|offers|annotation)$') != -1) {
             return;
         }
 
